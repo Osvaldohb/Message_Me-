@@ -10,22 +10,42 @@ const Login = () => {
 
   const [countries,setCountries]=useState([])
 
-  const [data,setData]=useState()
 
   useEffect(()=>{
     getCallingCode()
   },[])
 
+  
+
   const onSubmit=(data)=>{
-    console.log(data)
-    setData(data)
+
+     const requestOptions={
+      method:'POST',
+      headers :{
+        "Content-Type":"application/json"
+        },
+        body:JSON.stringify(data)
+    }
+
+     fetch("http://localhost:8080/users/add",requestOptions)
+     .then(Response=>Response.json())
+     .then(data=>{
+       if(data){
+         setToogle(true);
+        }
+     })
   }
+
+
+
+
 
   const getCallingCode=async()=>{
     await fetch("https://restcountries.com/v3.1/lang/spanish")
                 .then(Response=>Response.json())
                 .then(data=>{
                  setCountries(data);
+                
                 })
   }
 
@@ -114,35 +134,36 @@ const Login = () => {
                             <div className="col-12 d-flex justify-content-center ">
                                 <div className='w-75'>
                                     <label htmlFor="" className='w-100'>Nombre:</label>
-                                    <input type="text"  className='w-100 rounded' {...register('Nombre',{required:true})}/>
+                                    <input type="text"  className='w-100 rounded' {...register('nombre',{required:true})}/>
                                     {errors.Nombre?.type === 'required' && <p role="alert" >Nombre es requerido</p>}
                                     <div className='mt-3'>
                                       <label htmlFor="" className='w-100 '>Nickname:</label>
-                                      <input type="text"  className='w-100 rounded' {...register("Apodo")}/>
+                                      <input type="text"  className='w-100 rounded' {...register("apodo")}/>
                                     </div>
                                     <div className='mt-3'>
                                       <label htmlFor="" className='w-100 '>Correo:</label>
-                                      <input type="email"  className='w-100 rounded' {...register('Correo')}/>
+                                      <input type="email"  className='w-100 rounded' {...register('correo')}/>
                                     </div>
                                     <div className='mt-3'>
                                       <label htmlFor="" className='w-100 '>Contraseña:</label>
-                                      <input type="password"  className='w-100 rounded' {...register('Contraseña',{minLength:8})}/>
+                                      <input type="password"  className='w-100 rounded' {...register('contrasena',{minLength:8})}/>
                                       {errors.Contraseña?.type==='minLength' && <p role='alert'>La contraseña tiene que ser de minimo 8 Caracteres</p>}
                                     </div>
                                           
                                     <div className='mt-3 Register__cel'>
-                                      <select name="" id="" className='w-100 rounded mt-2' {...register('Prefijo')}>
+                                      <select name="" id="" className='w-100 rounded mt-2' {...register('prefijo')}>
                                       {countries.map((country,index)=>{
                                         const result=country.idd.root+country.idd.suffixes[0];
 
-                                        const flag=country.flags.svg
+                                        const send=result.substring(1);
+
                       
                             
                       
-                                        return <option value={result} key={index} >{ country.name.common+result}</option>
+                                        return <option value={send} key={index} >{ country.name.common+result}</option>
                                       })}
                                       </select>
-                                      <input type="tel" className='w-100 rounded mt-2' maxLength={10} {...register('Telefono')}/>
+                                      <input type="tel" className='w-100 rounded mt-2' maxLength={10} {...register('telefono')}/>
                                     </div>     
                                     <button className='btn btn-info mt-3 w-100 rounded-pill' type='submit'>¡Registrarme!</button>
                                 </div>     
